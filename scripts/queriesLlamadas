@@ -1,0 +1,48 @@
+-- Ver las tablas de HBase
+hbase(main):006:0> list
+TABLE                                                                                                               
+llamadas                                                                                                            
+test                                                                                                                
+2 row(s) in 0.0170 seconds
+
+-- Ver la cantidad de llamadas de la tabla
+> count 'llamadas'
+4 row(s) in 0.0180 seconds
+
+-- Leer un determinado registro
+> get 'llamadas', '46710080:20120808101011'
+
+COLUMN                         CELL                                                                                 
+ destino:domicilio             timestamp=1381949669531, value=Colombres 26                                          
+ destino:nombre                timestamp=1381949669527, value=Jesse Pinkman                                         
+ destino:numero                timestamp=1381949669524, value=59119202                                              
+ llamada:estado                timestamp=1381949669544, value=A                                                     
+ llamada:fin                   timestamp=1381949669539, value=20120808104550                                        
+ llamada:inicio                timestamp=1381949669534, value=20120808101011                                        
+ origen:domicilio              timestamp=1381949669520, value=Venezuela 3383                                        
+ origen:nombre                 timestamp=1381949669516, value=Walter White                                          
+ origen:numero                 timestamp=1381949669511, value=46710080                                              
+9 row(s) in 0.0850 seconds
+
+-- si no existe
+get 'llamadas', '46710080:20120808101014'
+
+COLUMN                         CELL                                                                                 
+0 row(s) in 0.0070 seconds
+
+-- Encontrar todas las llamadas
+> scan 'llamadas'
+
+-- Encontrar las llamadas de Walter White
+> scan 'llamadas', {COLUMNS => ['destino:nombre', 'llamada:fin'], LIMIT => 10, STARTROW => '46710080', STOPROW => '46710080Z' }
+
+ROW                            COLUMN+CELL                                                                          
+ 46710080:20120808101011       column=destino:nombre, timestamp=1381949669527, value=Jesse Pinkman                  
+ 46710080:20120808101011       column=llamada:fin, timestamp=1381949669539, value=20120808104550                    
+ 46710080:20120808105011       column=destino:nombre, timestamp=1381949669574, value=Skyler White                   
+ 46710080:20120808105011       column=llamada:fin, timestamp=1381949669621, value=20120808105320                    
+ 46710080:20120808111011       column=destino:nombre, timestamp=1381949669683, value=Jesse Pinkman                  
+ 46710080:20120808111011       column=llamada:fin, timestamp=1381949669727, value=20120808112251                    
+3 row(s) in 0.0310 seconds
+
+
