@@ -30,7 +30,7 @@ class HomeLlamadas {
 
 	def static void main(String[] args) {
 		// OJO, TIENEN QUE COINCIDIR LA VERSION DEL POM.XML CON LA QUE TIENE EL SERVER
-		// hduser | l****
+		// hduser | pwd: hduser
 		config = new Configuration(true)
 
 		//config.set("hbase.zookeeper.quorum", "localhost")

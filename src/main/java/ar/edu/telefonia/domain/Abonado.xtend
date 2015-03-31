@@ -1,10 +1,13 @@
 package ar.edu.telefonia.domain
 
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Accessors
 class Abonado {
 	
-	@Property String numero
-	@Property String nombreTitular
-	@Property String domicilio
+	String numero
+	String nombreTitular
+	String domicilio
 
 	new(String numero, String nombreTitular) {
 		this(numero, nombreTitular, "")
@@ -35,4 +38,5 @@ class Abonado {
 	override toString() {
 		super.toString() + " [" + nombreTitular + "]"
 	}
+
 }
