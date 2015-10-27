@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.List
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.KeyValue
 import org.apache.hadoop.hbase.client.HConnection
 import org.apache.hadoop.hbase.client.HConnectionManager
@@ -30,27 +31,25 @@ class HomeLlamadas {
 
 	def static void main(String[] args) {
 		// OJO, TIENEN QUE COINCIDIR LA VERSION DEL POM.XML CON LA QUE TIENE EL SERVER
-		// hduser | pwd: hduser
-		config = new Configuration(true)
+		// Si no te va a aparecer un mensaje como el siguiente:
+		// org.apache.hadoop.hbase.client.NoServerForRegionException: Unable to find region for llamadas,,99999999999999 after 10 tries.
+		// 	at org.apache.hadoop.hbase.client.HConnectionManager$HConnectionImplementation.locateRegionInMeta(HConnectionManager.java:1095)
+		// su hduser | pwd: hduser
+		// En home/hduser/apps/hbase-0.98.7-hadoop2/bin hacer ./start-hbase.sh
+		// config = new Configuration(true)
+		config = HBaseConfiguration.create()
 
-		//config.set("hbase.zookeeper.quorum", "localhost")
-		//config.setInt("hbase.zookeeper.property.clientPort", 2181) 
+		config.set("hbase.cluster.distributed", "false")
+		config.set("hbase.zookeeper.quorum", "localhost")
+		config.setInt("hbase.zookeeper.property.clientPort", 2181) 
 		connection = HConnectionManager.createConnection(config)
 		println("Connection establecida con HBase: " + connection)
 
-		//	conf = HBaseConfiguration.create
-		// Without pooling, the connection to a table will be reinitialized.
-		// Creating a new connection to a table might take up to 5-10 seconds!
-		//pool = new HTablePool(conf, 10)
-		// If you don't have tables or column families, HBase will throw an
-		// exception. Need to pre-create those. If already exists, it will throw
-		// as well. Ah, tricky... :)
 		try {
 			println ("************* LLAMADAS EN OBJETOS *********************")
 			new HomeLlamadas().getLlamadas(new Abonado("46710080", "Walter White")).forEach [
 				llamada | println(llamada.toString)				
 			]
-			
 		} catch (IOException e) {
 			e.printStackTrace
 			println("ERROR IO")
@@ -82,18 +81,18 @@ class HomeLlamadas {
 			// podemos acceder por clave
 			val abonadoOrigen = crearOUsarAbonado(result, "origen")
 			val abonadoDestino = crearOUsarAbonado(result, "destino")
-			val llamada = new Llamada
-			llamada.origen = abonadoOrigen 
-			llamada.destino =  abonadoDestino
-			llamada.fechaInicio = getFecha(getDato(result, "llamada", "inicio"))
-			llamada.fechaFin = getFecha(getDato(result, "llamada", "fin"))
-			llamada.estado = getDato(result, "llamada", "estado")
-			llamadas.add(llamada)
+			new Llamada => [
+				origen = abonadoOrigen
+				destino =  abonadoDestino
+				fechaInicio = getFecha(getDato(result, "llamada", "inicio"))
+				fechaFin = getFecha(getDato(result, "llamada", "fin"))
+				estado = getDato(result, "llamada", "estado")
+				llamadas.add(it)
+			]
 			
 			// For each de columnas variables
 			val KeyValue[] datos = result.raw
 			for (KeyValue kv : datos) {
-
 				// TODO: En xtend setear los valores
 				// Los abonados hay que sacarlos de un home especial
 				println("family: " + Bytes.toString(kv.family))
