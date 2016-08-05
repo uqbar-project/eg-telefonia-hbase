@@ -1,7 +1,7 @@
 # Llamadas telefónicas
 
 ## Objetivo
-muestra cómo se modela un conjunto de llamadas entre abonados de una compañía telefónica. 
+muestra cómo se modela un [conjunto de llamadas entre abonados de una compañía telefónica](http://ddsutn.com.ar/material/guia-de-ejercicios/guia-modelado-datos/nosql_telefonia) en una base NoSQL de tipo clave-valor. 
 
 ## Modelo
 La llamada tiene como información 
