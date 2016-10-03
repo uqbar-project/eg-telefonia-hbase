@@ -20,11 +20,11 @@ Es decir: en HBase el modelo es desnormalizado mientras que en objetos es normal
 ## Instalación
 Antes de correr el main, tenés que instalar una base de datos [HBase en Linux](https://hbase.apache.org/book.html#quickstart) [o Windows](https://hbase.apache.org/cygwin.html) y levantar el server (ejecutable start-hbase.sh). 
 
-Para visualizar la información de una manera menos áspera de lo que propone el shell de HBase, podés instalarte [HUE](http://gethue.com/hadoop-hue-3-on-hdp-installation-tutorial/)
-
-En la carpeta [scripts](scripts) del directorio vas a encontrar dos archivos:
+Para visualizar la información de una manera menos áspera de lo que propone el shell de HBase, podés instalarte [HUE](http://gethue.com/hadoop-hue-3-on-hdp-installation-tutorial/).
 
 ## Correr el ejemplo
+
+En la carpeta [scripts](scripts) del directorio vas a encontrar dos archivos:
 
 * [Script Llamadas](scripts/scriptLlamadas) para ejecutarlo en el shell de HBase (ejecutable hbase shell del directorio $HBASE_DIR/bin). 
 Este script inserta datos de varias llamadas.
