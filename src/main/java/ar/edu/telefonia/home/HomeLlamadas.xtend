@@ -7,14 +7,16 @@ import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.List
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.hbase.Cell
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.KeyValue
-import org.apache.hadoop.hbase.client.HConnection
-import org.apache.hadoop.hbase.client.HConnectionManager
-import org.apache.hadoop.hbase.client.HTableInterface
+import org.apache.hadoop.hbase.TableName
+import org.apache.hadoop.hbase.client.Connection
+import org.apache.hadoop.hbase.client.ConnectionFactory
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.client.ResultScanner
 import org.apache.hadoop.hbase.client.Scan
+import org.apache.hadoop.hbase.client.Table
 import org.apache.hadoop.hbase.util.Bytes
 
 class HomeLlamadas {
@@ -23,10 +25,10 @@ class HomeLlamadas {
 	 * Demo de Telefonia
 	 * 
 	 * @author Adam Horvath
- 	*/
+ 	*/	
 	private static final String tablaLlamadas = "llamadas"
 
-	static HConnection connection
+	static Connection connection
 	static Configuration config
 
 	def static void main(String[] args) {
@@ -42,7 +44,7 @@ class HomeLlamadas {
 		config.set("hbase.cluster.distributed", "false")
 		config.set("hbase.zookeeper.quorum", "localhost")
 		config.setInt("hbase.zookeeper.property.clientPort", 2181) 
-		connection = HConnectionManager.createConnection(config)
+		connection = ConnectionFactory.createConnection(config)
 		println("Connection establecida con HBase: " + connection)
 
 		try {
@@ -61,7 +63,7 @@ class HomeLlamadas {
 	 * @throws IOException
  	*/
 	def List<Llamada> getLlamadas(Abonado abonado) {
-		val HTableInterface table = connection.getTable(tablaLlamadas)
+		val Table table = connection.getTable(TableName.valueOf(tablaLlamadas))
 		val scan = new Scan()
 		scan.addFamily(Bytes.toBytes("origen"))
 		scan.addFamily(Bytes.toBytes("destino"))
@@ -91,8 +93,8 @@ class HomeLlamadas {
 			]
 			
 			// For each de columnas variables
-			val KeyValue[] datos = result.raw
-			for (KeyValue kv : datos) {
+			val Cell[] datos = result.rawCells
+			for (Cell kv : datos) {
 				// TODO: En xtend setear los valores
 				// Los abonados hay que sacarlos de un home especial
 				println("family: " + Bytes.toString(kv.family))
